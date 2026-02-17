@@ -271,7 +271,41 @@ Privacy must be required by policy and enforced by implementation.
 
 ---
 
-## 12. Summary
+## 12. Real-world precedent: EU Digital Identity Wallet (EUDI)
+
+The EU Digital Identity Wallet (EUDI), mandated under eIDAS 2.0, is the most significant real-world deployment of this exact architecture.
+
+### What it is
+
+eIDAS 2.0 is an EU regulation that requires all member states to provide citizens with a government-backed digital identity wallet by 2026. Pilot programs are already running across multiple member states.
+
+### Why it matters as evidence
+
+EUDI uses the same stack described in this document:
+
+- OpenID4VCI for credential issuance into the wallet
+- OpenID4VP for credential presentation to relying parties
+- SD-JWT and related selective disclosure formats
+- A wallet model where credentials are held by the user, not by websites
+
+This is not a research project or a proposal. It is a legal mandate backed by 27 governments, currently in active deployment.
+
+### What it proves
+
+- The architecture described in this document is deployable at national scale
+- Real issuers (governments, banks) can and do issue privacy-preserving credentials
+- Relying parties can verify age without receiving identity data
+- The remaining barriers in other jurisdictions are political and economic, not technical
+
+### The policy implication
+
+If the EU can mandate this by law, other jurisdictions can require the same. The UK, US, Canada, and others face the same policy choice. The technical foundation already exists and is in production.
+
+EUDI should be cited as evidence when advocating for privacy-preserving age verification requirements in any jurisdiction.
+
+---
+
+## 13. Summary
 
 Privacy-preserving age verification is feasible today.
 
@@ -282,6 +316,8 @@ A standards-aligned ecosystem typically includes:
 - OpenID4VP (presentation protocol)
 - OpenID4VCI (issuance protocol)
 - SD-JWT or ZKP-capable proof formats (selective disclosure and privacy)
+
+The EU Digital Identity Wallet demonstrates that this stack can be mandated and deployed at national scale.
 
 The remaining question is not technical feasibility.
 

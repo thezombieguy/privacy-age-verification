@@ -57,7 +57,22 @@ This project will reference and align with open standards that support privacy-p
 - W3C Verifiable Credentials (VC)
 - W3C Decentralized Identifiers (DID)
 - OpenID for Verifiable Presentations (OpenID4VP)
+- OpenID for Verifiable Credential Issuance (OpenID4VCI)
 - Selective Disclosure JWT (SD-JWT)
+
+## 6a. Real-world precedent: EU Digital Identity Wallet (EUDI)
+
+The EU Digital Identity Wallet, mandated under eIDAS 2.0, is the most significant evidence that this architecture is viable at scale.
+
+All EU member states are required to deploy government-backed digital identity wallets by 2026, using the same standards listed above. Pilot programs are running now.
+
+This project will cite EUDI as evidence that:
+
+- privacy-preserving age verification is technically deployable today
+- governments can mandate minimum disclosure as a legal requirement
+- the remaining barriers in other jurisdictions are political, not technical
+
+EUDI demonstrates that the choice between identity harvesting and privacy-preserving verification is a policy decision, not a technical constraint.
 
 ## 7. Advocacy goals
 This project prioritizes advocacy and policy outcomes.

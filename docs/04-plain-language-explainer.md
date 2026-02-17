@@ -171,6 +171,26 @@ Then the policy has failed.
 
 ---
 
+## This is already happening in Europe
+
+The EU has already mandated this approach by law.
+
+Under eIDAS 2.0, all EU member states are required to provide citizens with a government-backed digital identity wallet by 2026. Pilot programs are already running in multiple countries.
+
+The EU wallet works exactly as described above:
+
+- a trusted government issuer provides a digital credential to the user's phone
+- the user presents only the minimum required proof to websites
+- websites receive a yes/no answer, not identity documents
+
+This is not a theoretical future system.
+
+It is being built and deployed right now, backed by the legal force of 27 governments.
+
+The UK, US, Canada, and other countries face the same choice. The technology already exists. The only question is whether legislators require privacy-preserving design, or allow identity harvesting to become the default.
+
+---
+
 ## Summary
 
 Child safety and adult privacy are not in conflict.
