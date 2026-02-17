@@ -104,8 +104,9 @@ These are the same protocols EUDI mandates. This is intentional.
 | Set up walt.id issuer + wallet via Docker Compose | ~0.5 days |
 | Configure issuer to issue age-only SD-JWT credential | ~0.5 days |
 | Build relying website (OpenID4VP request, SD-JWT verification, result display) | ~1 day |
+| Trust model UI (received / verified / not received panels, tamper demo) | ~0.5 days |
 | Wiring, local dev setup, README | ~0.5 days |
-| **Total** | **~2–3 days** |
+| **Total** | **~3 days** |
 
 ---
 
@@ -154,6 +155,112 @@ This alignment is deliberate. The prototype can be presented as: "a working demo
 
 ---
 
+## Trust Model: Signing, Validation, and Replay Prevention
+
+A core goal of the prototype is to make the trust model visible — not just assert that verification happened, but show cryptographically that the token is genuine, untampered, and cannot be reused.
+
+### Issuer keypair and key publication
+
+The issuer generates an **ES256** asymmetric keypair on startup (the same curve EUDI uses). The private key signs every credential it issues and is never shared. The public key is published at a well-known endpoint:
+
+```
+GET http://localhost:3001/.well-known/jwks.json
+```
+
+Any relying party can independently fetch and verify the issuer public key — no central authority needed, no phone-home to the issuer at verification time. This mirrors exactly how EUDI relying parties verify member state issuer signatures.
+
+---
+
+### What the SD-JWT token looks like
+
+An issued credential has three parts: a signed JWT header and payload, a signature, and one or more disclosures appended after a `~` separator.
+
+**Header** (identifies the algorithm and key)
+```json
+{
+  "alg": "ES256",
+  "typ": "sd-jwt",
+  "kid": "issuer-key-1"
+}
+```
+
+**Payload** (what the issuer commits to — note: the claim itself is hashed, not plaintext)
+```json
+{
+  "iss": "http://localhost:3001",
+  "iat": 1771366681,
+  "exp": 1802902681,
+  "nbf": 1771366681,
+  "vct": "AgeCredential",
+  "_sd_alg": "sha-256",
+  "_sd": [
+    "aHR0cHM6Ly9leGFtcGxlLmNvbS9hZ2Vfb3Zlcl8xOA=="
+  ]
+}
+```
+
+The `_sd` array contains a **salted hash** of the disclosed claim — not the claim value itself. This is the core of SD-JWT selective disclosure: the issuer commits to the claim cryptographically without embedding it in plaintext in the JWT body.
+
+**Disclosure** (base64url-encoded, appended after `~`)
+```json
+["random-salt-value", "age_over_18", true]
+```
+
+The full token as transmitted:
+```
+<base64url-header>.<base64url-payload>.<signature>~<base64url-disclosure>
+```
+
+The relying party verifies trust in three steps:
+1. Verify the JWT signature against the issuer public key from the JWKS endpoint
+2. Hash the disclosure and confirm it matches the `_sd` entry in the payload
+3. Extract `age_over_18: true` from the verified disclosure
+
+If the disclosure is tampered with, step 2 fails. If the signature is forged or the token is modified, step 1 fails.
+
+---
+
+### Replay prevention via nonce
+
+When a user clicks "Prove I'm over 18", the relying website first issues a **nonce** — a one-time random challenge — before the wallet responds. The wallet binds this nonce into its presentation. The relying website verifies:
+
+- the nonce matches what it issued for this session
+- the nonce has not been seen before (one-time use)
+- the presentation has not expired (`exp` check)
+
+This means:
+- A presentation intercepted in transit cannot be replayed elsewhere
+- The same presentation cannot be submitted twice to the same site
+- A presentation generated for Site A cannot be used on Site B
+
+---
+
+### Token lifecycle
+
+```
+Issuer signs credential     private key used once, not stored after signing
+Credential stored           user wallet (localStorage), not the issuer
+Presentation generated      wallet binds nonce + disclosure, signs presentation
+Relying party verifies      public key from JWKS, nonce check, hash check, expiry check
+Relying party stores        nothing — session flag only: age_verified = true
+```
+
+---
+
+### What the UI makes visible
+
+Rather than silently passing these checks, the relying website shows three explicit panels:
+
+| Panel | Content |
+|---|---|
+| **Received** | `age_over_18: true`, issuer identifier, credential expiry |
+| **Verified** | Signature valid (public key shown), nonce matched, disclosure hash confirmed, not expired |
+| **Not received** | Name — absent. Date of birth — absent. ID number — absent. Address — absent. Photo — absent. |
+
+An optional **tamper demo** mode deliberately corrupts the token and reruns verification, showing an explicit failure. This is useful for press and policy audiences to demonstrate that the trust model is cryptographic, not cosmetic.
+
+---
+
 ## Diagrams
 
 ### Component Architecture
@@ -188,19 +295,25 @@ sequenceDiagram
 
   Note over U,I: Credential Issuance via OpenID4VCI
   U->>I: Request age credential
+  I->>I: Generate ES256 keypair
   I->>I: Sign SD-JWT with age_over_18: true
   I->>W: Deliver credential via OpenID4VCI
   W->>W: Store credential on device
 
   Note over U,RP: Age Proof via OpenID4VP
   U->>RP: Visit site, request access
-  RP->>W: OpenID4VP presentation request
-  W->>W: Generate SD-JWT presentation
+  RP->>RP: Generate one-time nonce
+  RP->>W: OpenID4VP request with nonce
+  W->>W: Bind nonce to SD-JWT presentation
   W->>RP: SD-JWT presentation
-  RP->>RP: Verify issuer signature
+  RP->>I: Fetch public key from JWKS endpoint
+  RP->>RP: Verify signature against public key
+  RP->>RP: Verify nonce matches and is unused
+  RP->>RP: Verify disclosure hash matches payload
+  RP->>RP: Verify credential not expired
   RP->>U: Access granted
 
-  Note over RP: RP received only: age_over_18=true
+  Note over RP: Received: age_over_18=true only
   Note over RP: No DOB, name, ID number, or photo
 ```
 
