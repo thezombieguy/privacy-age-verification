@@ -10,10 +10,10 @@ These diagrams use Mermaid syntax, which renders in GitHub Markdown.
 
 ```mermaid
 flowchart LR
-  U[User] -->|Requests age credential| I[Trusted Issuer<br/>(Gov / Bank / Carrier)]
-  I -->|Issues credential<br/>(stored on device)| W[User Wallet<br/>(phone)]
-  RP[Relying Website] -->|Requests proof:<br/>Over 18?| W
-  W -->|Returns proof:<br/>Yes/No only| RP
+  U[User] -->|Requests age credential| I[Trusted Issuer<br>(Gov / Bank / Carrier)]
+  I -->|Issues credential<br>(stored on device)| W[User Wallet<br>(phone)]
+  RP[Relying Website] -->|Requests proof:<br>Over 18?| W
+  W -->|Returns proof:<br>Yes/No only| RP
   RP -->|Grants or denies access| U
 
   note1((No ID upload to websites))
@@ -35,7 +35,7 @@ flowchart LR
 flowchart LR
   U[User] -->|Uploads ID + selfie| RP[Relying Website]
   RP -->|Sends identity artifacts| V[Verification Vendor]
-  V -->|Stores ID images, selfies,<br/>DOB, logs| DB[(Central Database)]
+  V -->|Stores ID images, selfies,<br>DOB, logs| DB[(Central Database)]
   V -->|Returns pass/fail| RP
   RP -->|Grants access| U
 
