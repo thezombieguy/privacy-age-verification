@@ -154,6 +154,58 @@ This alignment is deliberate. The prototype can be presented as: "a working demo
 
 ---
 
+## Diagrams
+
+### Component Architecture
+
+```mermaid
+flowchart LR
+  subgraph Local Docker
+    I["Issuer Service (walt.id)"]
+    W["Web Wallet (walt.id)"]
+  end
+  subgraph Custom Build
+    RP["Relying Website (Node.js)"]
+  end
+
+  U[User] -->|"1. Request credential"| I
+  I -->|"2. Issues SD-JWT via OpenID4VCI"| W
+  W -->|"3. Stores credential"| W
+  U -->|"4. Visit site"| RP
+  RP -->|"5. OpenID4VP proof request"| W
+  W -->|"6. SD-JWT presentation"| RP
+  RP -->|"7. age_over_18: true only"| U
+```
+
+### Full Protocol Flow
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant I as Issuer (walt.id)
+  participant W as Wallet (walt.id)
+  participant RP as Relying Website
+
+  Note over U,I: Credential Issuance via OpenID4VCI
+  U->>I: Request age credential
+  I->>I: Sign SD-JWT with age_over_18: true
+  I->>W: Deliver credential via OpenID4VCI
+  W->>W: Store credential on device
+
+  Note over U,RP: Age Proof via OpenID4VP
+  U->>RP: Visit site, request access
+  RP->>W: OpenID4VP presentation request
+  W->>W: Generate SD-JWT presentation
+  W->>RP: SD-JWT presentation
+  RP->>RP: Verify issuer signature
+  RP->>U: Access granted
+
+  Note over RP: RP received only: age_over_18=true
+  Note over RP: No DOB, name, ID number, or photo
+```
+
+---
+
 ## What the Prototype Demonstrates
 
 - The relying website receives **only** `age_over_18: true` and a valid cryptographic signature — nothing else
