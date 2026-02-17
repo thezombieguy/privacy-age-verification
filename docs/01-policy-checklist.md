@@ -125,7 +125,8 @@ Examples of relevant standards ecosystems include:
 
 - W3C Verifiable Credentials
 - W3C Decentralized Identifiers
-- OpenID for Verifiable Presentations
+- OpenID for Verifiable Credential Issuance (OpenID4VCI)
+- OpenID for Verifiable Presentations (OpenID4VP)
 - Selective Disclosure JWT (SD-JWT)
 
 ---

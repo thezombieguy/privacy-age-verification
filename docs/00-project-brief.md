@@ -60,7 +60,7 @@ This project will reference and align with open standards that support privacy-p
 - OpenID for Verifiable Credential Issuance (OpenID4VCI)
 - Selective Disclosure JWT (SD-JWT)
 
-## 6a. Real-world precedent: EU Digital Identity Wallet (EUDI)
+## 7. Real-world precedent: EU Digital Identity Wallet (EUDI)
 
 The EU Digital Identity Wallet, mandated under eIDAS 2.0, is the most significant evidence that this architecture is viable at scale.
 
@@ -74,7 +74,7 @@ This project will cite EUDI as evidence that:
 
 EUDI demonstrates that the choice between identity harvesting and privacy-preserving verification is a policy decision, not a technical constraint.
 
-## 7. Advocacy goals
+## 8. Advocacy goals
 This project prioritizes advocacy and policy outcomes.
 
 Key goals include:
@@ -85,7 +85,7 @@ Key goals include:
 - Encourage open standards, interoperability, and multiple issuer options
 - Encourage threat-model-driven thinking and breach impact minimization
 
-## 8. If building a reference implementation, what it must NOT do
+## 9. If building a reference implementation, what it must NOT do
 Any implementation included in this project must not:
 
 - collect or store ID images
@@ -94,16 +94,18 @@ Any implementation included in this project must not:
 - create centralized logs that can reconstruct browsing history
 - require users to repeatedly upload documents to new sites
 
-## 9. If building, what it SHOULD demonstrate
+## 10. If building, what it SHOULD demonstrate
 A reference implementation should demonstrate:
 
 - A verifier receives only a yes/no result or minimal proof
-- Proof is unlinkable across relying parties
 - Credential is stored by the user (wallet model), not websites
 - Threat model and breach impact are near-zero for relying sites
 - The system supports multiple issuers (no monopoly by design)
+- The trust model is visible: signing, signature verification, and replay prevention are shown explicitly, not just asserted
 
-## 10. Threat model summary (high level)
+Note: full unlinkability across relying parties (via BBS+ or ZKP) is a desirable property but is out of scope for the initial prototype due to implementation complexity. The prototype uses SD-JWT with nonce-based replay prevention, which addresses replay attacks while acknowledging that cross-site correlation by a sophisticated issuer remains a longer-term problem to solve.
+
+## 11. Threat model summary (high level)
 Primary risks:
 
 - breach of ID artifacts stored by websites or vendors
@@ -120,7 +122,7 @@ Mitigations:
 - strict retention limits and auditing requirements
 - multiple issuers to reduce centralization
 
-## 11. Open questions and research topics
+## 12. Open questions and research topics
 This project will collect research and analysis on:
 
 - which jurisdictions and proposed laws should be tracked and summarized

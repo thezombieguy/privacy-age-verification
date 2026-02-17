@@ -61,8 +61,9 @@ sequenceDiagram
   participant W as User Wallet
   participant I as Issuer
 
-  RP->>W: "Prove you are over 18"
-  W->>I: (No call required)\nUses issuer signature already stored
-  W->>RP: Proof: age_over_18 = true\nIssuer signature valid
-  RP->>RP: Store only: "age_verified = true"
+  RP->>W: Prove you are over 18
+  Note over W: No call to issuer required
+  Note over W: Uses issuer signature already stored
+  W->>RP: age_over_18 = true, issuer signature valid
+  RP->>RP: Store only age_verified = true
 ```
