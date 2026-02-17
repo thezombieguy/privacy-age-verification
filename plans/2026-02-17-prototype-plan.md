@@ -319,6 +319,58 @@ sequenceDiagram
 
 ---
 
+## Deployment Architecture
+
+### Advocacy site
+
+- Static site generated from the existing markdown docs in this repo
+- Hosted on **Netlify** (free tier, auto-deploys on every push to main)
+- Netlify renders the docs as a clean public-facing site without managing any infrastructure
+- URL: `yourdomain.com`
+
+### Prototype demo
+
+Hosted on **AWS EC2** (t3.small, ~$15/month) running Docker Compose with **Caddy** as a reverse proxy, handling HTTPS automatically via Let's Encrypt.
+
+Subdomains:
+
+```
+issuer.yourdomain.com   →  walt.id issuer service
+wallet.yourdomain.com   →  walt.id web wallet
+verify.yourdomain.com   →  custom relying website
+```
+
+### Environment configuration
+
+All service URLs are environment-variable driven — no hardcoded `localhost` references. The same Docker Compose file works locally and in production by swapping a `.env` file:
+
+```
+# .env.local
+ISSUER_URL=http://localhost:3001
+WALLET_URL=http://localhost:3002
+VERIFIER_URL=http://localhost:3000
+
+# .env.production
+ISSUER_URL=https://issuer.yourdomain.com
+WALLET_URL=https://wallet.yourdomain.com
+VERIFIER_URL=https://verify.yourdomain.com
+```
+
+This is standard practice and adds minimal complexity to the build.
+
+### Revised effort estimate
+
+| Task | Effort |
+|---|---|
+| Prototype build (as planned) | ~3 days |
+| Environment variable config for deployability | ~0.5 days |
+| AWS EC2 setup + Docker Compose + Caddy + HTTPS | ~0.5 days |
+| Advocacy static site | ~1 day |
+| Domain + DNS wiring | ~2 hours |
+| **Total** | **~5 days** |
+
+---
+
 ## What the Prototype Demonstrates
 
 - The relying website receives **only** `age_over_18: true` and a valid cryptographic signature — nothing else
