@@ -1,10 +1,10 @@
-/* Privacy-Preserving Age Verification — main.js */
+/* AgeProof — main.js */
 
 (function () {
   'use strict';
 
   /* ── Theme toggle ── */
-  const THEME_KEY = 'pav-theme';
+  const THEME_KEY = 'ageproof-theme';
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
   function applyTheme(theme) {
