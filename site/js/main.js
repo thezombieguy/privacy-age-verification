@@ -1,4 +1,4 @@
-/* AgeKey — main.js */
+/* JustAge — main.js */
 
 (function () {
   'use strict';

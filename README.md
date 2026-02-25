@@ -1,4 +1,4 @@
-# AgeKey
+# JustAge
 
 ## Purpose
 Advocate for age verification systems that prove an age threshold (e.g. over 18) without requiring identity collection, ID uploads, selfies, or centralized tracking.
