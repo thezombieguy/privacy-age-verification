@@ -1,30 +1,7 @@
-/* AgeProof — main.js */
+/* AgeKey — main.js */
 
 (function () {
   'use strict';
-
-  /* ── Theme toggle ── */
-  const THEME_KEY = 'ageproof-theme';
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    const btn = document.getElementById('theme-toggle');
-    if (btn) btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-  }
-
-  function initTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
-    applyTheme(saved || (prefersDark.matches ? 'dark' : 'light'));
-    prefersDark.addEventListener('change', function (e) {
-      if (!localStorage.getItem(THEME_KEY)) applyTheme(e.matches ? 'dark' : 'light');
-    });
-    document.getElementById('theme-toggle').addEventListener('click', function () {
-      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      localStorage.setItem(THEME_KEY, next);
-      applyTheme(next);
-    });
-  }
 
   /* ── Mobile nav ── */
   function initMobileNav() {
@@ -81,10 +58,9 @@
   /* ── Mermaid init ── */
   function initMermaid() {
     if (typeof mermaid === 'undefined') return;
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     mermaid.initialize({
       startOnLoad: true,
-      theme: isDark ? 'dark' : 'neutral',
+      theme: 'neutral',
       securityLevel: 'loose',
       flowchart: { useMaxWidth: true, htmlLabels: true },
       sequence: { useMaxWidth: true }
@@ -93,7 +69,6 @@
 
   /* ── Boot ── */
   document.addEventListener('DOMContentLoaded', function () {
-    initTheme();
     initMobileNav();
     initSmoothScroll();
     initNavHighlight();
