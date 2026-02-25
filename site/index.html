@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy-Preserving Age Verification</title>
+  <meta name="description" content="Age verification should prove age, not identity. Advocate for systems that protect privacy while keeping children safe.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav class="site-nav" aria-label="Main navigation">
+  <a href="#" class="nav-brand">PAV</a>
+  <button id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation">&#9776;</button>
+  <ul id="nav-menu" class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#disclosure">Disclosure</a></li>
+    <li><a href="#policy">Policy</a></li>
+    <li><a href="#eudi">EU Precedent</a></li>
+    <li><a href="#threats">Threats</a></li>
+    <li><a href="#standards">Standards</a></li>
+    <li><button id="theme-toggle" aria-label="Switch to dark mode">&#9790;</button></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════ 1. HERO ═══════════════════ -->
+<section id="hero" class="hero">
+  <div class="container">
+    <p class="section-label">Privacy-Preserving Age Verification</p>
+    <h1>Age verification is not identity verification.</h1>
+    <p class="tagline">A website only needs a yes/no answer &mdash; not your name, birthdate, ID, or photo. Better systems exist. Demand them.</p>
+    <div class="hero-ctas">
+      <a href="#how-it-works" class="btn btn--primary">See how it works</a>
+      <a href="#policy" class="btn btn--outline">Policy checklist</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 2. THE PROBLEM ═══════════════════ -->
+<section id="problem">
+  <div class="container">
+    <p class="section-label">The Problem</p>
+    <h2>ID uploads are a ticking time bomb</h2>
+
+    <p>There is growing pressure to require age verification for social media, adult websites, and other online services. Protecting children online is a valid goal. However, many proposed solutions push toward the worst possible implementation: uploading a driver's license or passport, uploading a selfie, and sending highly sensitive identity data to private companies.</p>
+
+    <p>If websites and verification vendors collect ID documents and selfies, the question is not <em>"will this data leak?"</em> &mdash; the question is <em>"when will it leak?"</em> Major technology companies with large security budgets are breached regularly. If millions of people are forced to upload IDs for everyday internet use, the result is the largest collection of identity documents ever assembled by private companies.</p>
+
+    <p>A leak of age verification records can enable identity theft, fraud, doxxing, stalking, blackmail, forced outing of LGBTQ people, and permanent linkage between identity and browsing history. The risk is not hypothetical &mdash; it is predictable, and it scales with adoption.</p>
+
+    <div class="callout">
+      <p class="mb-0">"If a website can say <strong>'upload your ID and a selfie to continue'</strong> &mdash; the policy has failed."</p>
+    </div>
+
+    <p>Many platforms and vendors actually <em>prefer</em> identity-based systems because identity data can be used for tracking, advertising, permanent bans, and building centralized logs of online activity. This is why the worst implementation often becomes the default &mdash; unless the law explicitly prevents it.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 3. HOW IT SHOULD WORK ═══════════════════ -->
+<section id="how-it-works">
+  <div class="container container--wide">
+    <p class="section-label">How It Should Work</p>
+    <h2>Prove age, not identity</h2>
+
+    <p>Privacy-preserving age verification uses a simple principle: <strong>prove an attribute, not identity</strong>. Prove "over 18" without proving "who you are."</p>
+
+    <ol>
+      <li><strong>A trusted issuer verifies you once</strong> &mdash; a government, bank, or mobile carrier confirms your age.</li>
+      <li><strong>You receive a digital credential</strong> &mdash; stored in a wallet on your phone, controlled by you.</li>
+      <li><strong>When a website asks, you present a proof</strong> &mdash; the proof only answers: yes or no.</li>
+      <li><strong>The website receives no identity data</strong> &mdash; no selfie, no birthdate, no name, no ID number.</li>
+    </ol>
+
+    <h3 class="mt-2">Good Model: Privacy-Preserving</h3>
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+flowchart LR
+  U[User] -->|Requests age credential| I["Trusted Issuer\n(Gov / Bank / Carrier)"]
+  I -->|"Issues credential\n(stored on device)"| W["User Wallet\n(phone)"]
+  RP[Relying Website] -->|"Requests proof:\nOver 18?"| W
+  W -->|"Returns proof:\nYes/No only"| RP
+  RP -->|Grants or denies access| U
+      </pre>
+      <noscript><p><em>Diagram requires JavaScript to render. It shows: User requests credential from Issuer, stores in Wallet, and presents yes/no proof to Website.</em></p></noscript>
+    </div>
+
+    <h3>Bad Model: Identity Harvesting</h3>
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+flowchart LR
+  U[User] -->|Uploads ID + selfie| RP[Relying Website]
+  RP -->|Sends identity artifacts| V[Verification Vendor]
+  V -->|"Stores ID images, selfies,\nDOB, logs"| DB[(Central Database)]
+  V -->|Returns pass/fail| RP
+  RP -->|Grants access| U
+  A[Attackers] -->|Target| DB
+  LE[Government] -->|Subpoenas| DB
+      </pre>
+      <noscript><p><em>Diagram requires JavaScript to render. It shows: User uploads ID to Website, which forwards to Vendor who stores everything in a central database vulnerable to attackers and government requests.</em></p></noscript>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 4. WHAT THE WEBSITE RECEIVES ═══════════════════ -->
+<section id="disclosure">
+  <div class="container container--wide">
+    <p class="section-label">Minimum Disclosure</p>
+    <h2>What the website actually receives</h2>
+
+    <p>In a privacy-preserving system, the verification exchange is minimal. The wallet proves age using a cryptographic credential signed by a trusted issuer &mdash; no call back to the issuer is needed.</p>
+
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+sequenceDiagram
+  participant RP as Website
+  participant W as User Wallet
+  participant I as Issuer
+
+  RP->>W: Prove you are over 18
+  Note over W: No call to issuer required
+  Note over W: Uses issuer signature already stored
+  W->>RP: age_over_18 = true, issuer signature valid
+  RP->>RP: Store only age_verified = true
+      </pre>
+      <noscript><p><em>Diagram requires JavaScript. It shows the website asking the wallet for proof, and receiving only "age_over_18 = true" with a valid signature.</em></p></noscript>
+    </div>
+
+    <div class="panels">
+      <div class="panel panel--received">
+        <h4>Received</h4>
+        <ul>
+          <li><code>age_over_18: true</code></li>
+          <li>Issuer identifier</li>
+          <li>Credential expiry</li>
+        </ul>
+      </div>
+      <div class="panel panel--verified">
+        <h4>Verified</h4>
+        <ul>
+          <li>Issuer signature valid (public key checked)</li>
+          <li>Nonce matched (replay prevented)</li>
+          <li>Disclosure hash confirmed</li>
+          <li>Credential not expired</li>
+        </ul>
+      </div>
+      <div class="panel panel--absent">
+        <h4>Not Received</h4>
+        <ul>
+          <li>Name &mdash; absent</li>
+          <li>Date of birth &mdash; absent</li>
+          <li>ID number &mdash; absent</li>
+          <li>Address &mdash; absent</li>
+          <li>Photo &mdash; absent</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 5. POLICY CHECKLIST ═══════════════════ -->
+<section id="policy">
+  <div class="container">
+    <p class="section-label">For Policymakers &amp; Advocates</p>
+    <h2>Policy checklist: 15 requirements</h2>
+    <p>These are the minimum requirements needed to ensure that "age verification" does not become identity harvesting, surveillance infrastructure, or a permanent record of lawful internet use.</p>
+
+    <details>
+      <summary>1. Age verification must not require identity verification</summary>
+      <div class="details-body">
+        <p>A compliant system must prove "user is over X" or "user is in an age band" without requiring legal name, date of birth, government ID number, photo/selfie, or address.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>2. Websites must not collect or store identity documents</summary>
+      <div class="details-body">
+        <p>Relying websites must be prohibited from collecting or storing ID scans, selfies, biometric face scans, full date of birth, government ID numbers, or address details &mdash; including via third-party SDKs.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>3. Minimum disclosure must be mandatory</summary>
+      <div class="details-body">
+        <p>The default verification result must be yes/no (meets threshold) or age band only. Not date of birth, exact age, identity details, or persistent identifiers.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>4. Verification providers must be licensed and audited</summary>
+      <div class="details-body">
+        <p>Third-party providers must be licensed, subject to security audits, breach reporting, penalties for non-compliance, and data minimization rules. The goal is to prevent every website from becoming its own unregulated identity vault.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>5. Strong restrictions on retention and secondary use</summary>
+      <div class="details-body">
+        <p>Providers must be prohibited from retaining ID artifacts beyond issuance, building behavioral profiles, selling or sharing verification data, or using it for marketing. Retention limits must be defined in law, not policy.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>6. Unlinkability must be a design requirement</summary>
+      <div class="details-body">
+        <p>A compliant system must prevent cross-site tracking via shared tokens, creation of a universal "verified adult" ID number, and linking verification activity across unrelated services.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>7. No browsing history reconstruction</summary>
+      <div class="details-body">
+        <p>The system must not enable any party to reconstruct a user's browsing history through verification logs, token re-use, centralized verification events, or issuer correlation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>8. Multiple issuers must be allowed</summary>
+      <div class="details-body">
+        <p>The law should require interoperability and allow multiple trusted issuers: government, banks, mobile carriers, accredited private issuers, OS wallet providers. No law should create a monopoly verifier.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9. Open standards must be supported</summary>
+      <div class="details-body">
+        <p>Compliant systems should be based on open standards (W3C Verifiable Credentials, DIDs, OpenID4VP, OpenID4VCI, SD-JWT) to ensure interoperability and prevent vendor lock-in.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>10. No biometric requirements</summary>
+      <div class="details-body">
+        <p>A compliant system must not require face scans, voice prints, biometric templates, or behavioral biometrics. Age gating does not justify biometric surveillance.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>11. No mandatory real-name policies</summary>
+      <div class="details-body">
+        <p>Age verification must not be used to enforce real-name policies, government-name identity linkage, or permanent account identity binding. It is a narrow attribute proof, not a social identity system.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>12. Equal access &mdash; no exclusion by design</summary>
+      <div class="details-body">
+        <p>A compliant system must not exclude people without a driver's license or passport, who cannot safely share identity artifacts, or who are vulnerable to coercion (e.g. domestic abuse situations). Multiple privacy-safe methods must be available.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>13. Explicit security requirements</summary>
+      <div class="details-body">
+        <p>Approved providers must meet minimum security requirements: encryption in transit and at rest, strict access controls, mandatory breach disclosure, independent penetration testing, and secure deletion guarantees.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>14. Clear legal definitions</summary>
+      <div class="details-body">
+        <p>Laws must explicitly define: "age verification," "identity verification," "relying party," "issuer," "verification provider," "minimum disclosure," "retention," and "unlinkability." Without these definitions, the law will default to the worst interpretation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>15. The simplest compliance test</summary>
+      <div class="details-body">
+        <p>If a website can say <strong>"Upload your ID and a selfie to continue"</strong> &mdash; then the law has failed. The law must explicitly prevent that outcome.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══════════════════ 6. EU PRECEDENT ═══════════════════ -->
+<section id="eudi">
+  <div class="container">
+    <p class="section-label">Real-World Precedent</p>
+    <h2>The EU is already doing this</h2>
+
+    <p>The EU Digital Identity Wallet (EUDI), mandated under <strong>eIDAS 2.0</strong>, requires all EU member states to provide citizens with a government-backed digital identity wallet by 2026. Pilot programs are already running across multiple countries.</p>
+
+    <p>EUDI uses exactly the architecture this project advocates for:</p>
+
+    <ul>
+      <li><strong>Credentials held by the user</strong>, not by websites</li>
+      <li><strong>Selective disclosure</strong> &mdash; websites receive only what they need</li>
+      <li><strong>Open standards</strong> &mdash; OpenID4VCI, OpenID4VP, SD-JWT</li>
+      <li><strong>No ID uploads</strong> to relying parties</li>
+    </ul>
+
+    <div class="callout">
+      <p class="mb-0">This is not a research project or a proposal. It is a <strong>legal mandate backed by 27 governments</strong>, currently in active deployment.</p>
+    </div>
+
+    <h3 class="mt-2">What EUDI proves</h3>
+    <ul>
+      <li>Privacy-preserving age verification is deployable at national scale</li>
+      <li>Real issuers (governments, banks) can and do issue privacy-preserving credentials</li>
+      <li>Relying parties can verify age without receiving identity data</li>
+      <li>The remaining barriers in other jurisdictions are <strong>political and economic, not technical</strong></li>
+    </ul>
+
+    <p class="mt-2">If the EU can mandate this by law, the UK, US, Canada, and other jurisdictions can require the same. The technical foundation already exists and is in production.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 7. THREAT MODEL ═══════════════════ -->
+<section id="threats">
+  <div class="container container--wide">
+    <p class="section-label">Threat Model</p>
+    <h2>How age verification systems fail</h2>
+    <p>When age verification is implemented without privacy safeguards, the failures are predictable and severe.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <p class="threat-id">T1</p>
+        <h4>Data Breach of ID Artifacts</h4>
+        <p>Stored ID scans and selfies are breached, causing permanent identity theft risk. A password breach is recoverable &mdash; a driver's license breach is not.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T2</p>
+        <h4>Blackmail &amp; Extortion</h4>
+        <p>A breach exposes identity + proof of adult status + category of websites accessed. High-risk populations include public figures, teachers, LGBTQ individuals, and politically vulnerable groups.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T3</p>
+        <h4>Doxxing &amp; Stalking</h4>
+        <p>Identity artifacts include addresses and full names. Attackers use these to locate individuals, escalating harassment and domestic abuse.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T4</p>
+        <h4>Outing &amp; Forced Disclosure</h4>
+        <p>Verification logs reveal sexual orientation, gender identity, relationship status, or political beliefs &mdash; even if the site itself is legal.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T5</p>
+        <h4>Cross-Site Tracking</h4>
+        <p>A reusable token or identifier lets the verification provider correlate the same person across multiple websites, enabling de-anonymization and behavioral profiling.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T6</p>
+        <h4>Centralized Log Correlation</h4>
+        <p>Verification event logs (time, IP, device, domain, result) can reconstruct browsing history even when identity is not stored long-term.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T7</p>
+        <h4>Function Creep</h4>
+        <p>A system built "for children" expands to political speech moderation, real-name enforcement, anti-anonymity rules, and general digital ID requirements.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T8</p>
+        <h4>Coercion &amp; Abuse</h4>
+        <p>Abusive partners demand access to verification records or proof of which sites were accessed, increasing coercive control.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T9</p>
+        <h4>False Positives &amp; Exclusion</h4>
+        <p>Systems reject valid users due to document mismatch, lighting issues, name changes, or immigration status &mdash; creating a "papers please" internet.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T10</p>
+        <h4>Black Market Creation</h4>
+        <p>When access requires identity proof, markets emerge for stolen IDs, fake selfies, and purchased verification accounts. Centralized checks often create stronger fraud incentives than they solve.</p>
+      </div>
+      <div class="card">
+        <p class="threat-id">T11</p>
+        <h4>Child Safety Failure</h4>
+        <p>ID upload requirements don't prevent minors from accessing content &mdash; they shift minors toward unregulated sites, offshore platforms, and credential sharing. High cost, low effect.</p>
+      </div>
+    </div>
+
+    <h3 class="mt-2">Mitigation Principles</h3>
+    <ul class="principles">
+      <li>Minimum disclosure</li>
+      <li>Unlinkability</li>
+      <li>User-held credentials</li>
+      <li>No ID retention</li>
+      <li>Multiple issuers</li>
+      <li>No biometrics</li>
+      <li>Strict retention rules</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════ 8. TECHNICAL STANDARDS ═══════════════════ -->
+<section id="standards">
+  <div class="container container--wide">
+    <p class="section-label">Technical Foundation</p>
+    <h2>Standards stack</h2>
+    <p>Privacy-preserving age verification is built on open standards that already exist and are in production use. These are the same standards the EU Digital Identity Wallet is built on.</p>
+
+    <dl class="standards-stack">
+      <div class="standard-row">
+        <dt>Verifiable Credentials</dt>
+        <dd><strong>W3C VC</strong> &mdash; A standard format for cryptographically signed, verifiable digital credentials. Defines how an issuer asserts "this holder has attribute X" and how a verifier confirms it.</dd>
+      </div>
+      <div class="standard-row">
+        <dt>DIDs</dt>
+        <dd><strong>W3C Decentralized Identifiers</strong> &mdash; User-controlled, decentralized identifiers that resolve to public keys. Enables verification without centralized identity databases.</dd>
+      </div>
+      <div class="standard-row">
+        <dt>OpenID4VP</dt>
+        <dd><strong>OpenID for Verifiable Presentations</strong> &mdash; The protocol for requesting and presenting credentials on the web. This is what makes VCs usable: it defines how a website requests proof of age and how a wallet responds.</dd>
+      </div>
+      <div class="standard-row">
+        <dt>OpenID4VCI</dt>
+        <dd><strong>OpenID for Verifiable Credential Issuance</strong> &mdash; Defines how credentials are issued into a user's wallet. Handles the initial issuance step from a trusted issuer.</dd>
+      </div>
+      <div class="standard-row">
+        <dt>SD-JWT</dt>
+        <dd><strong>Selective Disclosure JWT</strong> &mdash; An approach using JSON Web Tokens that supports selective disclosure. Reveal only <code>age_over_18: true</code> without revealing <code>birthdate</code>. Widely considered the most practical and deployable approach today.</dd>
+      </div>
+      <div class="standard-row">
+        <dt>Trust Frameworks</dt>
+        <dd>The layer that defines who is allowed to issue credentials, how keys are trusted, how auditing and revocation work, and what legal restrictions apply. Standards define formats and protocols; trust frameworks define governance.</dd>
+      </div>
+    </dl>
+
+    <p class="mt-2 text-dim">Standards do not guarantee privacy by default. Privacy must be required by policy and enforced by implementation. A system using open standards can still fail if issuers embed stable identifiers, verifiers request too much, or logs are retained indefinitely.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 9. FOOTER ═══════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <ul class="footer-links">
+      <li><a href="https://github.com/user/privacy-age-verification">GitHub Repository</a></li>
+      <li><a href="#problem">Project Brief</a></li>
+      <li><a href="#policy">Policy Checklist</a></li>
+      <li><a href="#threats">Threat Model</a></li>
+      <li><a href="#standards">Standards Map</a></li>
+    </ul>
+    <p class="footer-closing">Child safety and adult privacy are not in conflict. Age verification can protect children and protect privacy. The choice is not technical &mdash; it is political and economic. The safest option must be required, not merely allowed.</p>
+    <p class="mt-1">&copy; 2026 Privacy-Preserving Age Verification Project</p>
+  </div>
+</footer>
+
+<!-- Mermaid from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
