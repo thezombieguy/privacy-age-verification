@@ -44,6 +44,12 @@
   const isValid = verification && verification.valid;
   const claims = verification ? verification.claims : {};
 
+  // Find the dynamic age_over_N claim from disclosures
+  const ageClaim = decodedDisclosures
+    .filter(d => Array.isArray(d) && d.length === 3)
+    .find(d => String(d[1]).startsWith('age_over_'));
+  const ageClaimDisplay = ageClaim ? `${ageClaim[1]}: ${ageClaim[2]}` : 'age_over_18: true';
+
   const expDate = payload.exp ? new Date(payload.exp * 1000).toLocaleString() : 'Unknown';
   const iatDate = payload.iat ? new Date(payload.iat * 1000).toLocaleString() : 'Unknown';
 
@@ -56,7 +62,7 @@
 
       <div class="cred-claim">
         <span class="cred-claim-label">Claim</span>
-        <span class="cred-claim-value cred-claim-value--highlight">age_over_18: true</span>
+        <span class="cred-claim-value cred-claim-value--highlight">${ageClaimDisplay}</span>
       </div>
       <div class="cred-claim">
         <span class="cred-claim-label">Issuer</span>

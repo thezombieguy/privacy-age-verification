@@ -321,6 +321,93 @@ summary::-webkit-details-marker { display: none; }
   text-align: center;
 }
 
+/* ── Code blocks ── */
+.code-block {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  margin: .75rem 0 1.5rem;
+  border: 1px solid #334155;
+}
+.code-block code {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+
+/* ── Integration section ── */
+.integration-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+@media (max-width: 900px) {
+  .integration-grid { grid-template-columns: 1fr; }
+}
+.integration-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--c-card-shadow);
+}
+.integration-card h3 {
+  color: var(--c-primary);
+  margin-bottom: .75rem;
+  font-size: var(--fs-xl);
+}
+.integration-card h4 {
+  margin-top: 1.5rem;
+  font-size: var(--fs-base);
+  color: var(--c-text);
+}
+.integration-step {
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+.integration-security {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: var(--c-bg-alt);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+}
+.integration-security h4 {
+  margin-top: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-text);
+  margin-bottom: .5rem;
+}
+.integration-security ul {
+  list-style: none;
+  padding: 0;
+}
+.integration-security li {
+  font-size: var(--fs-xs);
+  color: var(--c-text-dim);
+  padding: .2rem 0;
+}
+.integration-security li::before {
+  content: '\2713';
+  color: var(--c-success);
+  font-weight: 700;
+  margin-right: .5rem;
+}
+.integration-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+
 /* ── Footer ── */
 .site-footer {
   background: var(--c-bg-alt);

@@ -22,6 +22,7 @@
     <li><a href="#eudi">EU Precedent</a></li>
     <li><a href="#threats">Threats</a></li>
     <li><a href="#standards">Standards</a></li>
+    <li><a href="#integration">Integration</a></li>
   </ul>
 </nav>
 
@@ -422,7 +423,154 @@ sequenceDiagram
   </div>
 </section>
 
-<!-- ═══════════════════ 9. FOOTER ═══════════════════ -->
+<!-- ═══════════════════ 9. INTEGRATION ═══════════════════ -->
+<section id="integration">
+  <div class="container container--wide">
+    <p class="section-label">For Developers</p>
+    <h2>Integrate age verification</h2>
+    <p>JustAge uses an OAuth-like redirect flow built on SD-JWT credentials. A website redirects users to a trusted issuer, which authenticates them, checks their age, and returns a cryptographic proof &mdash; no personal data leaves the issuer.</p>
+
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+sequenceDiagram
+  participant Site as Website (Verifier)
+  participant User as User Browser
+  participant Issuer as Trusted Issuer
+
+  Site->>User: Redirect to issuer with redirect_uri + state
+  User->>Issuer: Login &amp; authenticate
+  Issuer->>Issuer: Check age ≥ threshold
+  Issuer->>User: Redirect back with SD-JWT token + state
+  User->>Site: Callback with token + state
+  Site->>Site: Verify signature, expiry, disclosure
+  Site->>User: Access granted (no personal data stored)
+      </pre>
+      <noscript><p><em>Diagram requires JavaScript. It shows the redirect flow: Website sends user to Issuer, Issuer authenticates and checks age, returns SD-JWT credential back to Website.</em></p></noscript>
+    </div>
+
+    <div class="integration-grid">
+      <!-- Verifier guide -->
+      <div class="integration-card">
+        <h3>Website (Verifier)</h3>
+        <p>Add age verification to your site. You never see or store any personal data &mdash; only a cryptographic proof that a trusted issuer confirmed the user meets the age threshold.</p>
+
+        <h4>1. Redirect to issuer</h4>
+        <p class="integration-step">Generate a CSRF state token and redirect the user to the issuer's login page with your callback URL.</p>
+        <pre class="code-block"><code>app.get('/start-verify', (req, res) =&gt; {
+  const state = crypto.randomBytes(32).toString('base64url');
+  stateStore.set(state, {
+    redirectUri: 'https://your-site.com/callback',
+    expiry: Date.now() + 5 * 60 * 1000,
+  });
+
+  res.redirect(302,
+    `https://issuer.example.com/login`
+    + `?redirect_uri=${encodeURIComponent(redirectUri)}`
+    + `&amp;state=${state}`
+  );
+});</code></pre>
+
+        <h4>2. Receive callback</h4>
+        <p class="integration-step">The issuer redirects back with <code>?token=&lt;sd-jwt&gt;&amp;state=&lt;state&gt;</code>. Validate the state, then verify the credential.</p>
+        <pre class="code-block"><code>app.get('/callback', async (req, res) =&gt; {
+  const { token, state } = req.query;
+
+  // Validate state (CSRF protection)
+  const stored = stateStore.get(state);
+  if (!stored || Date.now() &gt;= stored.expiry) {
+    return res.status(400).send('Invalid state');
+  }
+  stateStore.delete(state);
+
+  // Verify the SD-JWT credential
+  const result = await verifyCredential(token);
+  if (result.valid &amp;&amp; result.claims.age_over_18) {
+    req.session.ageVerified = true;
+    res.redirect('/');
+  }
+});</code></pre>
+
+        <h4>3. Verify the credential</h4>
+        <p class="integration-step">Four checks: JWT signature (signed by trusted issuer), expiry, disclosure hash matches <code>_sd</code> array, and <code>age_over_18</code> is <code>true</code>.</p>
+
+        <div class="integration-security">
+          <h4>Security requirements</h4>
+          <ul>
+            <li>Validate and consume state parameter (one-time use, 5 min TTL)</li>
+            <li>Verify JWT signature against issuer's JWKS endpoint</li>
+            <li>Only accept credentials from allowlisted issuers</li>
+            <li>HTTPS on callback URL</li>
+            <li>Don't store or log the SD-JWT token</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Issuer guide -->
+      <div class="integration-card">
+        <h3>Identity Provider (Issuer)</h3>
+        <p>Issue age credentials from your existing user base. Banks, governments, and licensed identity providers already know their users' ages &mdash; no new data collection required.</p>
+
+        <h4>1. Host your public key</h4>
+        <p class="integration-step">Generate an ES256 keypair. Serve the public key at <code>/.well-known/jwks.json</code> so verifiers can check signatures.</p>
+        <pre class="code-block"><code>const { publicKey, privateKey } =
+  await jose.generateKeyPair('ES256');
+
+// Serve at GET /.well-known/jwks.json
+app.get('/.well-known/jwks.json', (req, res) =&gt; {
+  res.json({ keys: [{
+    ...await jose.exportJWK(publicKey),
+    kid: 'your-key-id-1',
+    alg: 'ES256',
+    use: 'sig',
+  }]});
+});</code></pre>
+
+        <h4>2. Build the SD-JWT credential</h4>
+        <p class="integration-step">When a user authenticates and qualifies, create a Selective Disclosure JWT with only the age claim.</p>
+        <pre class="code-block"><code>// Create disclosure: [salt, claim_name, value]
+const salt = base64url(crypto.randomBytes(16));
+const disclosure = base64url(
+  JSON.stringify([salt, 'age_over_18', true])
+);
+
+// Sign JWT with disclosure hash
+const jwt = await new jose.SignJWT({
+  iss: 'https://your-issuer.example.com',
+  iat: now, exp: now + 3600,
+  _sd_alg: 'sha-256',
+  _sd: [await sha256(disclosure)],
+  vct: 'AgeCredential',
+}).setProtectedHeader({
+  alg: 'ES256', kid: 'your-key-id-1',
+  typ: 'vc+sd-jwt',
+}).sign(privateKey);
+
+return `${jwt}~${disclosure}~`;</code></pre>
+
+        <h4>3. Handle the redirect flow</h4>
+        <p class="integration-step">Receive <code>redirect_uri</code> + <code>state</code>, authenticate the user, check age, and redirect back with the credential.</p>
+
+        <div class="integration-security">
+          <h4>Security requirements</h4>
+          <ul>
+            <li>Validate redirect_uri against an allowlist</li>
+            <li>Store private keys in HSM or secrets manager</li>
+            <li>Rotate keys every 90 days (keep expired keys for grace period)</li>
+            <li>HTTPS on all endpoints</li>
+            <li>Short credential TTL (1 hour recommended)</li>
+            <li>Never log user age or date of birth</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="integration-footer">
+      <p>Full integration guides with complete code examples are available in the <a href="https://github.com/thezombieguy/privacy-age-verification/tree/main/docs">project documentation</a>. A working prototype is available in the <a href="https://github.com/thezombieguy/privacy-age-verification/tree/main/prototype">prototype directory</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 10. FOOTER ═══════════════════ -->
 <footer class="site-footer">
   <div class="container">
     <ul class="footer-links">
@@ -431,6 +579,7 @@ sequenceDiagram
       <li><a href="#policy">Policy Checklist</a></li>
       <li><a href="#threats">Threat Model</a></li>
       <li><a href="#standards">Standards Map</a></li>
+      <li><a href="#integration">Integration Guide</a></li>
     </ul>
     <p class="footer-closing">Child safety and adult privacy are not in conflict. Age verification can protect children and protect privacy. The choice is not technical &mdash; it is political and economic. The safest option must be required, not merely allowed.</p>
     <p class="mt-1">&copy; 2026 JustAge</p>

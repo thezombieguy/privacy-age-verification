@@ -43,8 +43,8 @@
     <div class="age-gate" id="ageGate">
       <div class="shield-icon">&#x1f6e1;</div>
       <h2>Age Verification Required</h2>
-      <p>This platform requires age verification to access social features. Please verify you are over 18 to continue.</p>
-      <a href="/demo/spacebook/start-verify" class="btn btn--indigo">Verify My Age</a>
+      <p>This platform requires age verification to access social features. Please verify you are over 13 to continue.</p>
+      <a href="/demo/spacebook/start-verify?min_age=13" class="btn btn--indigo">Verify My Age</a>
     </div>
 
     <!-- Access granted (hidden until verified) -->
@@ -78,11 +78,14 @@
 
     function renderPanels(result) {
       const panels = document.getElementById('resultPanels');
+      // Find the dynamic age_over_N claim
+      const ageClaim = Object.keys(result.claims).find(k => k.startsWith('age_over_'));
+      const ageClaimDisplay = ageClaim ? `${ageClaim}: ${result.claims[ageClaim]}` : 'age claim: not found';
       panels.innerHTML = `
         <div class="panel panel--received">
           <h4>Received</h4>
           <ul>
-            <li>age_over_18: ${result.claims.age_over_18}</li>
+            <li>${ageClaimDisplay}</li>
             <li>Issuer: ${result.claims.issuer_name}</li>
             <li>Type: ${result.claims.vct}</li>
           </ul>

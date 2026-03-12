@@ -19,9 +19,9 @@ export interface IssuanceResult {
   jwtPayload: Record<string, unknown>;
 }
 
-export async function issueCredential(): Promise<IssuanceResult> {
+export async function issueCredential(minAge: number = 18): Promise<IssuanceResult> {
   const salt = base64url(crypto.randomBytes(16));
-  const disclosure = base64url(JSON.stringify([salt, 'age_over_18', true]));
+  const disclosure = base64url(JSON.stringify([salt, `age_over_${minAge}`, true]));
   const disclosureHash = await sha256Hash(disclosure);
 
   const now = Math.floor(Date.now() / 1000);
@@ -33,6 +33,7 @@ export async function issueCredential(): Promise<IssuanceResult> {
     _sd: [disclosureHash],
     vct: 'AgeCredential',
     issuer_name: config.issuerName,
+    min_age: minAge,
   };
 
   const jwt = await new jose.SignJWT(payload as jose.JWTPayload)
