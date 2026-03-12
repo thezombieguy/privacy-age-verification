@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spacebook — Connect With Friends</title>
+  <link rel="stylesheet" href="/demo/shared.css">
+  <link rel="stylesheet" href="/demo/spacebook/spacebook.css">
+</head>
+<body>
+  <div class="demo-banner">
+    <strong>JustAge Demo</strong> — This simulates a real website requiring age verification.
+    <a href="/">Back to explainer</a>
+  </div>
+
+  <div class="spacebook-page">
+    <header class="spacebook-header">
+      <div class="spacebook-logo">Space<span>book</span></div>
+      <p class="spacebook-tagline">Connect with friends and the world around you</p>
+    </header>
+
+    <!-- Listings (blurred until verified) -->
+    <div class="listings-grid blurred" id="listings">
+      <div class="listing-card">
+        <h3>Trending Posts</h3>
+        <p>See what's trending today</p>
+      </div>
+      <div class="listing-card">
+        <h3>Groups</h3>
+        <p>Join communities near you</p>
+      </div>
+      <div class="listing-card">
+        <h3>Profiles</h3>
+        <p>Connect with friends</p>
+      </div>
+      <div class="listing-card">
+        <h3>Events</h3>
+        <p>Discover local events</p>
+      </div>
+    </div>
+
+    <!-- Age gate (visible until verified) -->
+    <div class="age-gate" id="ageGate">
+      <div class="shield-icon">&#x1f6e1;</div>
+      <h2>Age Verification Required</h2>
+      <p>This platform requires age verification to access social features. Please verify you are over 18 to continue.</p>
+      <a href="/demo/spacebook/start-verify" class="btn btn--indigo">Verify My Age</a>
+    </div>
+
+    <!-- Access granted (hidden until verified) -->
+    <div class="access-granted" id="accessGranted">
+      <div class="access-badge">&#x2714; Age Verified — Access Granted</div>
+      <div class="result-panels" id="resultPanels"></div>
+      <div class="wallet-link">
+        <a href="/demo/wallet/">View your credential in the Wallet</a>
+      </div>
+    </div>
+
+    <footer class="spacebook-footer">
+      <p>Spacebook is a fictional demo site. <a href="/">Learn how JustAge works</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Check if we already have a stored credential
+    const stored = localStorage.getItem('justage-demo-credential');
+    if (stored) {
+      document.getElementById('listings').classList.remove('blurred');
+      document.getElementById('ageGate').style.display = 'none';
+      document.getElementById('accessGranted').classList.add('visible');
+
+      // Show verification panels from stored result
+      const result = JSON.parse(localStorage.getItem('justage-demo-verification') || 'null');
+      if (result && result.valid) {
+        renderPanels(result);
+      }
+    }
+
+    function renderPanels(result) {
+      const panels = document.getElementById('resultPanels');
+      panels.innerHTML = `
+        <div class="panel panel--received">
+          <h4>Received</h4>
+          <ul>
+            <li>age_over_18: ${result.claims.age_over_18}</li>
+            <li>Issuer: ${result.claims.issuer_name}</li>
+            <li>Type: ${result.claims.vct}</li>
+          </ul>
+        </div>
+        <div class="panel panel--verified">
+          <h4>Verified</h4>
+          <ul>
+            <li>Signature: ${result.checks.signatureValid ? 'Valid' : 'Invalid'}</li>
+            <li>Not expired: ${result.checks.notExpired ? 'Yes' : 'No'}</li>
+            <li>Disclosure hash: ${result.checks.disclosureHashValid ? 'Valid' : 'Invalid'}</li>
+          </ul>
+        </div>
+        <div class="panel panel--absent">
+          <h4>Not Received</h4>
+          <ul>
+            <li>Full name</li>
+            <li>Date of birth</li>
+            <li>Address</li>
+            <li>ID number</li>
+          </ul>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

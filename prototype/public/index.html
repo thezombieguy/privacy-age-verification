@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JustAge &mdash; Interactive Prototype</title>
+  <meta name="description" content="Interactive demo of privacy-preserving age verification using SD-JWT. Prove age without revealing identity.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════ TITLE ═══════════════════ -->
+<div class="page-title">
+  <h1>JustAge <span>Interactive Demo</span></h1>
+  <p>Watch three separate systems interact &mdash; no identity data ever leaves the issuer.</p>
+</div>
+
+<!-- ═══════════════════ SIMULATED BROWSER ═══════════════════ -->
+<div class="browser">
+
+  <!-- Title bar -->
+  <div class="browser-titlebar">
+    <div class="traffic-dot traffic-dot--red"></div>
+    <div class="traffic-dot traffic-dot--yellow"></div>
+    <div class="traffic-dot traffic-dot--green"></div>
+  </div>
+
+  <!-- URL bar -->
+  <div class="browser-toolbar">
+    <div class="url-bar">
+      <span class="lock-icon">&#x1f512;</span>
+      <span class="url-text" id="url-text">https://spacebook.com</span>
+    </div>
+  </div>
+
+  <!-- Content viewport -->
+  <div class="browser-viewport">
+
+    <!-- ── Scene 1: Spacebook Age Gate ── -->
+    <div class="scene scene--barfinder active" id="scene-1">
+      <div class="barfinder-logo">Space<span>book</span></div>
+      <p class="barfinder-tagline">Connect with friends and the world around you</p>
+
+      <div class="blurred-listings">
+        <div class="blurred-card"></div>
+        <div class="blurred-card"></div>
+        <div class="blurred-card"></div>
+        <div class="blurred-card"></div>
+      </div>
+
+      <div class="age-gate-overlay">
+        <div class="shield-icon">&#x1f6e1;</div>
+        <h2>Age Verification Required</h2>
+        <p>You must be 18+ to access social features. Verify your age privately &mdash; no personal data shared.</p>
+        <button class="btn btn--amber" id="btn-start-verify">Verify My Age</button>
+      </div>
+    </div>
+
+    <!-- ── Scene 2: Government Issuer ── -->
+    <div class="scene scene--gov" id="scene-2">
+      <div class="gov-header">
+        <div class="gov-shield">&#x1f6e1;</div>
+        <div>
+          <div class="gov-title">Australian Government</div>
+          <div class="gov-subtitle">Age Verification Service</div>
+        </div>
+      </div>
+
+      <div class="gov-body">
+        <p>We verify your age using existing government records. The requesting website will <strong>not</strong> receive any personal information.</p>
+
+        <div class="gov-privacy-box">
+          <h4>The requesting site will NOT receive:</h4>
+          <ul>
+            <li>Your full name</li>
+            <li>Your date of birth</li>
+            <li>Your ID number</li>
+            <li>Your address</li>
+            <li>Your photo</li>
+          </ul>
+        </div>
+
+        <div id="gov-issue-state">
+          <button class="btn btn--navy" id="btn-issue">Verify My Age</button>
+        </div>
+
+        <div class="gov-success" id="gov-success">
+          <div class="gov-success-badge">&#x2714; Credential Issued</div>
+          <p>A cryptographic credential has been issued to your wallet. It contains only <code>age_over_18: true</code> &mdash; no identity data.</p>
+          <button class="btn btn--navy" id="btn-to-wallet">Continue to Wallet</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Scene 3: Wallet ── -->
+    <div class="scene scene--wallet" id="scene-3">
+      <div class="wallet-header">
+        <div class="wallet-icon">&#x1f4b3;</div>
+        <div>
+          <div class="wallet-title">My Credentials</div>
+          <div class="wallet-subtitle">Stored securely on your device</div>
+        </div>
+      </div>
+
+      <div class="cred-card">
+        <div class="cred-card-header">
+          <span class="cred-type" id="cred-type">Age Credential</span>
+          <span class="cred-badge">&#x2714; Valid</span>
+        </div>
+        <div id="cred-claims">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="not-included">
+        <h4>Not included in this credential:</h4>
+        <div class="not-included-tags">
+          <span class="not-included-tag">Name</span>
+          <span class="not-included-tag">Date of Birth</span>
+          <span class="not-included-tag">ID Number</span>
+          <span class="not-included-tag">Address</span>
+          <span class="not-included-tag">Photo</span>
+        </div>
+      </div>
+
+      <details class="inspect-section">
+        <summary>View raw SD-JWT</summary>
+        <pre class="inspect-pre" id="wallet-raw"></pre>
+      </details>
+
+      <details class="inspect-section">
+        <summary>View decoded token</summary>
+        <pre class="inspect-pre" id="wallet-decoded"></pre>
+      </details>
+
+      <div class="wallet-actions">
+        <button class="btn btn--blue" id="btn-return-barfinder">Return to Spacebook</button>
+      </div>
+    </div>
+
+    <!-- ── Scene 4: Verification Result ── -->
+    <div class="scene scene--result" id="scene-4">
+      <div class="result-header">
+        <div class="result-badge result-badge--success" id="result-badge">&#x2714; Verified</div>
+        <h2 id="result-title">Age Verified &mdash; Access Granted</h2>
+        <p id="result-subtitle">Spacebook received only a cryptographic proof. No personal data.</p>
+      </div>
+
+      <div class="unblurred-listings" id="unblurred-listings">
+        <div class="unblurred-card">Trending Posts</div>
+        <div class="unblurred-card">Groups</div>
+        <div class="unblurred-card">Profiles</div>
+        <div class="unblurred-card">Events</div>
+      </div>
+
+      <div class="panels" id="result-panels">
+        <div class="panel panel--received" id="panel-received"></div>
+        <div class="panel panel--verified" id="panel-verified"></div>
+        <div class="panel panel--absent" id="panel-absent"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn--danger btn--small" id="btn-tamper">Tamper Demo</button>
+        <button class="btn btn--ghost btn--small" id="btn-reset">Start Over</button>
+      </div>
+    </div>
+
+  </div><!-- /browser-viewport -->
+</div><!-- /browser -->
+
+<!-- ═══════════════════ NARRATOR ═══════════════════ -->
+<div class="narrator">
+  <p class="narrator-text" id="narrator-text">You visit a website that requires age verification.</p>
+  <div class="progress-dots" id="progress-dots">
+    <div class="progress-dot active" data-scene="1"></div>
+    <div class="progress-dot" data-scene="2"></div>
+    <div class="progress-dot" data-scene="3"></div>
+    <div class="progress-dot" data-scene="4"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="site-footer">
+  <p>JustAge Prototype &mdash; <a href="https://github.com/thezombieguy/privacy-age-verification">GitHub</a></p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
