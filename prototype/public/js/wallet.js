@@ -1,6 +1,6 @@
 // wallet.js — sessionStorage wallet abstraction
 
-const STORAGE_KEY = 'justage_credential';
+const STORAGE_KEY = 'agerelay_credential';
 
 export const wallet = {
   store(credential) {

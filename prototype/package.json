@@ -1,7 +1,7 @@
 {
-  "name": "justage-prototype",
+  "name": "agerelay-prototype",
   "version": "1.0.0",
-  "description": "JustAge — Privacy-preserving age verification prototype using SD-JWT",
+  "description": "AgeRelay — Privacy-preserving age verification prototype using SD-JWT",
   "private": true,
   "type": "module",
   "scripts": {

@@ -28,7 +28,7 @@ async function main() {
   app.use(demoRoutes);
 
   app.listen(config.port, () => {
-    console.log(`JustAge prototype running at http://localhost:${config.port}`);
+    console.log(`AgeRelay prototype running at http://localhost:${config.port}`);
   });
 }
 

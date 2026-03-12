@@ -1,4 +1,4 @@
-/* JustAge — main.js */
+/* AgeRelay — main.js */
 
 (function () {
   'use strict';

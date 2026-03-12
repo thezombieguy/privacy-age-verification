@@ -2,8 +2,8 @@
 
 (function renderWallet() {
   const container = document.getElementById('walletContent');
-  const credential = localStorage.getItem('justage-demo-credential');
-  const verification = JSON.parse(localStorage.getItem('justage-demo-verification') || 'null');
+  const credential = localStorage.getItem('agerelay-demo-credential');
+  const verification = JSON.parse(localStorage.getItem('agerelay-demo-verification') || 'null');
 
   if (!credential) {
     container.innerHTML = `
@@ -111,8 +111,8 @@
 })();
 
 function clearWallet() {
-  localStorage.removeItem('justage-demo-credential');
-  localStorage.removeItem('justage-demo-verification');
+  localStorage.removeItem('agerelay-demo-credential');
+  localStorage.removeItem('agerelay-demo-verification');
   window.location.reload();
 }
 

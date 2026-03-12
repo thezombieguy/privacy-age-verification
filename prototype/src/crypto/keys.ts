@@ -9,7 +9,7 @@ export async function initKeys(): Promise<void> {
   privateKey = priv;
   publicKey = pub;
   publicJwk = await jose.exportJWK(pub);
-  publicJwk.kid = 'justage-demo-1';
+  publicJwk.kid = 'agerelay-demo-1';
   publicJwk.alg = 'ES256';
   publicJwk.use = 'sig';
 }

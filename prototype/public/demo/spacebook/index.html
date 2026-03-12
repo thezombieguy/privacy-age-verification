@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="demo-banner">
-    <strong>JustAge Demo</strong> — This simulates a real website requiring age verification.
+    <strong>AgeRelay Demo</strong> — This simulates a real website requiring age verification.
     <a href="/">Back to explainer</a>
   </div>
 
@@ -57,20 +57,20 @@
     </div>
 
     <footer class="spacebook-footer">
-      <p>Spacebook is a fictional demo site. <a href="/">Learn how JustAge works</a></p>
+      <p>Spacebook is a fictional demo site. <a href="/">Learn how AgeRelay works</a></p>
     </footer>
   </div>
 
   <script>
     // Check if we already have a stored credential
-    const stored = localStorage.getItem('justage-demo-credential');
+    const stored = localStorage.getItem('agerelay-demo-credential');
     if (stored) {
       document.getElementById('listings').classList.remove('blurred');
       document.getElementById('ageGate').style.display = 'none';
       document.getElementById('accessGranted').classList.add('visible');
 
       // Show verification panels from stored result
-      const result = JSON.parse(localStorage.getItem('justage-demo-verification') || 'null');
+      const result = JSON.parse(localStorage.getItem('agerelay-demo-verification') || 'null');
       if (result && result.valid) {
         renderPanels(result);
       }

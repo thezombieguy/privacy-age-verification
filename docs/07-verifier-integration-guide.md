@@ -1,10 +1,10 @@
 # Verifier Integration Guide
 
-How a website integrates JustAge privacy-preserving age verification.
+How a website integrates AgeRelay privacy-preserving age verification.
 
 ## Overview
 
-A **verifier** is any website that needs to confirm a visitor is over 18 — a social media platform, alcohol delivery service, online casino, or age-restricted content platform. In the JustAge ecosystem, the verifier:
+A **verifier** is any website that needs to confirm a visitor is over 18 — a social media platform, alcohol delivery service, online casino, or age-restricted content platform. In the AgeRelay ecosystem, the verifier:
 
 1. **Redirects** the user to a trusted issuer to obtain a credential
 2. **Receives** the credential back via a callback URL
@@ -283,11 +283,11 @@ if (result.valid) {
 }
 ```
 
-This is the approach used in the JustAge demo.
+This is the approach used in the AgeRelay demo.
 
 ## Testing
 
-Use the JustAge demo server to test your integration:
+Use the AgeRelay demo server to test your integration:
 
 1. Start the demo: `cd prototype && npm run dev`
 2. The demo issuer is at `http://localhost:3000/demo/issuer/login`

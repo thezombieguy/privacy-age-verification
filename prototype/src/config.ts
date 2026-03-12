@@ -3,5 +3,5 @@ export const config = {
   issuerUrl: process.env.ISSUER_URL || 'http://localhost:3000',
   credentialTtlSeconds: 3600,     // 1 hour
   nonceTtlSeconds: 300,           // 5 minutes
-  issuerName: 'JustAge Demo Issuer',
+  issuerName: 'AgeRelay Demo Issuer',
 };

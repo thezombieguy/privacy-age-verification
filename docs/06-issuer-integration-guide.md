@@ -1,10 +1,10 @@
 # Issuer Integration Guide
 
-How a bank, government agency, or identity provider implements credential issuance for JustAge.
+How a bank, government agency, or identity provider implements credential issuance for AgeRelay.
 
 ## Overview
 
-An **issuer** is a trusted organisation that already knows a user's age — a bank, government registry, or licensed identity provider. In the JustAge ecosystem, the issuer:
+An **issuer** is a trusted organisation that already knows a user's age — a bank, government registry, or licensed identity provider. In the AgeRelay ecosystem, the issuer:
 
 1. **Authenticates** the user (proves they are who they claim to be)
 2. **Looks up** their age from existing records (no user input required)
@@ -245,7 +245,7 @@ Base64url-encoded and appended after the JWT, separated by `~`.
 
 ## Testing
 
-Use the JustAge demo to test your integration:
+Use the AgeRelay demo to test your integration:
 
 1. Start the demo server: `cd prototype && npm run dev`
 2. Your issuer should redirect to your callback URL with a valid SD-JWT

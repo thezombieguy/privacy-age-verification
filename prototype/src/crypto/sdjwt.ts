@@ -37,7 +37,7 @@ export async function issueCredential(minAge: number = 18): Promise<IssuanceResu
   };
 
   const jwt = await new jose.SignJWT(payload as jose.JWTPayload)
-    .setProtectedHeader({ alg: 'ES256', kid: 'justage-demo-1', typ: 'vc+sd-jwt' })
+    .setProtectedHeader({ alg: 'ES256', kid: 'agerelay-demo-1', typ: 'vc+sd-jwt' })
     .sign(getPrivateKey());
 
   const sdJwt = `${jwt}~${disclosure}~`;

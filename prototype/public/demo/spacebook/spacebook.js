@@ -30,8 +30,8 @@
     const result = await verifyRes.json();
 
     // 3. Store credential and result in localStorage
-    localStorage.setItem('justage-demo-credential', token);
-    localStorage.setItem('justage-demo-verification', JSON.stringify(result));
+    localStorage.setItem('agerelay-demo-credential', token);
+    localStorage.setItem('agerelay-demo-verification', JSON.stringify(result));
 
     if (result.valid) {
       // Redirect to Spacebook main page (which will read localStorage)
