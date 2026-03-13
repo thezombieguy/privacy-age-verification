@@ -41,7 +41,7 @@
 }
 
 /* ── Base ── */
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 16px); }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 16px); overflow-x: hidden; }
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-base);
@@ -49,6 +49,7 @@ body {
   color: var(--c-text);
   background: var(--c-bg);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 a { color: var(--c-primary); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 a:hover { color: var(--c-primary-d); }
@@ -127,7 +128,7 @@ p  { margin-bottom: 1em; }
 
 /* ── Layout ── */
 .container       { max-width: var(--w-prose); margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2rem); }
-.container--wide { max-width: var(--w-wide); }
+.container--wide { max-width: var(--w-wide); min-width: 0; overflow-x: hidden; }
 .container--full { max-width: var(--w-max); }
 
 section {
@@ -269,7 +270,9 @@ summary::-webkit-details-marker { display: none; }
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
   overflow: hidden;
+  max-width: 100%;
 }
+.standard-row dd { overflow-wrap: break-word; word-break: break-word; }
 .standard-row {
   display: grid;
   grid-template-columns: 180px 1fr;
@@ -295,11 +298,16 @@ summary::-webkit-details-marker { display: none; }
 @media (max-width: 600px) {
   .standard-row { grid-template-columns: 1fr; }
   .standard-row dt { border-right: none; border-bottom: 1px solid var(--c-border); }
+  .card-grid { grid-template-columns: 1fr; }
+  .panels { grid-template-columns: 1fr; }
+  .principles { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .callout { padding: 1rem 1.25rem; font-size: var(--fs-base); }
+  .footer-links { gap: .75rem 1.25rem; }
 }
 
 /* ── Mermaid ── */
-.mermaid-wrapper { margin: 2rem 0; overflow-x: auto; }
-.mermaid { text-align: center; }
+.mermaid-wrapper { margin: 2rem 0; overflow-x: auto; max-width: 100%; }
+.mermaid { text-align: center; min-width: 0; }
 .mermaid svg { max-width: 100%; height: auto; }
 
 /* ── Mitigation principles list ── */
@@ -333,6 +341,7 @@ summary::-webkit-details-marker { display: none; }
   line-height: 1.6;
   margin: .75rem 0 1.5rem;
   border: 1px solid #334155;
+  max-width: 100%;
 }
 .code-block code {
   font-family: inherit;
@@ -358,6 +367,8 @@ summary::-webkit-details-marker { display: none; }
   border-radius: var(--radius);
   padding: 2rem;
   box-shadow: var(--c-card-shadow);
+  min-width: 0;
+  overflow: hidden;
 }
 .integration-card h3 {
   color: var(--c-primary);
